@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lector Ministry - Conversation Starters</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border: 5px solid #f0b400;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.6rem;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+        
+        .wheel-container {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin: 0 auto 25px;
+        }
+        
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #ffd700, #f0b400, #3498db, #2980b9,
+                #2ecc71, #27ae60, #9b59b6, #8e44ad,
+                #e74c3c, #c0392b, #1abc9c, #16a085,
+                #f39c12, #d35400, #34495e, #2c3e50
+            );
+            position: relative;
+            transition: transform 3s cubic-bezier(0.2, 0.8, 0.3, 1);
+            transform: rotate(0deg);
+        }
+        
+        .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 40px;
+            background: #2c3e50;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            z-index: 3;
+        }
+        
+        button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        button:hover, button:active {
+            background: #3498db;
+            transform: scale(0.98);
+        }
+        
+        .question-box {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            color: #2c3e50;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .instructions {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 15px;
+        }
+        
+        /* Mobile fixes */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .wheel-container {
+                width: 220px;
+                height: 220px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .question-box {
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💬 Lector Icebreaker Wheel</h1>
+        <p class="subtitle">Spin, get a question, and start chatting!</p>
+        
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel"></div>
+            <div class="center-dot"></div>
+        </div>
+        
+        <button onclick="spinWheel()" id="spinBtn">
+            🎯 SPIN THE WHEEL
+        </button>
+        
+        <div class="question-box" id="question">
+            Click "Spin the Wheel" to get your conversation starter!
+        </div>
+        
+        <p class="instructions">
+            Use this question to talk to someone nearby. No pressure — just be real!
+        </p>
+    </div>
+
+    <script>
+        const questions = [
+            "What’s something you’re curious about when it comes to serving in church?",
+            "What’s a word that describes how you’re feeling right now?",
+            "What’s something you’re looking forward to this month?",
+            "What’s your go-to when you’re stuck with school work or need a solution?",
+            "What’s the best part of being Catholic for you right now?",
+            "What's something about being a lector that fascinated you?",
+            "When was a time in church where you felt completely peaceful or inspired?",
+            "Have you ever wondered what goes into preparing to read at Mass?",
+            "If you had to explain what a lector does to a friend in one sentence, what would you say?",
+            "If you could ask God one question about your role in the Church, what would it be?",
+            "If you were to create a playlist for before Mass, what’s one song you’d include?",
+            "If you could thank one person from your faith journey, who would it be?",
+            "If you had a mentor for anything, what would you want to learn from them?",
+            "What’s one thing you hope to learn or improve during this attachment?",
+            "Who’s a speaker or storyteller you admire (in church or outside)?",
+            "What’s your favorite Gospel or Bible story—and why?",
+            "If you're invited to join the lector ministry and serve at Mass regularly, what would your response be?"
+        ];
+
+        let isSpinning = false;
+
+        function spinWheel() {
+            if (isSpinning) return;
+            
+            const wheel = document.getElementById('wheel');
+            const questionBox = document.getElementById('question');
+            const spinBtn = document.getElementById('spinBtn');
+            
+            // Disable during spin
+            isSpinning = true;
+            spinBtn.disabled = true;
+            spinBtn.textContent = '⏳ Spinning...';
+            spinBtn.style.opacity = '0.7';
+            
+            // Random rotation
+            const spins = 5 + Math.random();
+            const degrees = spins * 360 + Math.floor(Math.random() * 360);
+            
+            wheel.style.transition = 'transform 3s cubic-bezier(0.2, 0.8, 0.3, 1)';
+            wheel.style.transform = `rotate(${degrees}deg)`;
+            
+            // Pick random question
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * questions.length);
+                questionBox.textContent = questions[randomIndex];
+                
+                // Re-enable button
+                isSpinning = false;
+                spinBtn.disabled = false;
+                spinBtn.textContent = '🎯 SPIN AGAIN';
+                spinBtn.style.opacity = '1';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
